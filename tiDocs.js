@@ -6,7 +6,7 @@ for(var objName in apiJSON) {
 	// 2d/3dmatrix modules are invalid names, and never called directly anyway
 	if(objName == 'Titanium.UI.2DMatrix' || objName == 'Titanium.UI.3DMatrix') { continue; };
 	
-	sys.puts('/**\n * ' + apiJSON[objName].description + '\n */');
+	sys.puts('/**\n * ' + (apiJSON[objName].description!=null?apiJSON[objName].description:apiJSON[objName].summary) + '\n */');
 	sys.puts(objName + ' = {');
 	
 	var props = apiJSON[objName].properties;
@@ -14,7 +14,7 @@ for(var objName in apiJSON) {
 	
 	if(props && props.length > 0) {
 		for(var i = 0; i<props.length; i++) {
-			sys.print('\t/**\n\t * ' + props[i].value + '\n\t * @type ' + props[i].type+ '\n\t * @final\n\t */\n\t' + props[i].name + ': 0' + (i != props.length-1 ? ',\n\n' : ''));
+			sys.print('\t/**\n\t * ' + (props[i].description?props[i].description:props[i].summary) + '\n\t * @type ' + props[i].type+ '\n\t * @final\n\t */\n\t' + props[i].name + ': 0' + (i != props.length-1 ? ',\n\n' : ''));
 		}
 		sys.puts(methods && methods.length > 0 ? ',\n' : '');
 	}
@@ -22,14 +22,14 @@ for(var objName in apiJSON) {
 	if(methods && methods.length > 0) {
 		for(var i = 0; i< methods.length; i++ ) {
 			var params = methods[i].parameters;
-			var docs = '\t/**\n\t * ' + methods[i].value + '\n\t *\n\t * @type ' + methods[i].returntype + '\n';
+			var docs = '\t/**\n\t * ' + methods[i].summary + '\n\t *\n\t * @type ' + (methods[i].returns.type!=undefined?methods[i].returns.type:methods[i].returns[0].type) + '\n';
 			// fix broken method name for addRow
 			var funcDef = '\t ' + (methods[i].name == 'addRow[object]' ? 'addRow' : methods[i].name == 'removeRow[object]' ? 'removeRow' : methods[i].name) + ': function(';
 			if(params) {
 				for(var j = 0; j < params.length; j++) {
 					// default is a reserved word
 					funcDef += params[j].name == 'default' ? 'def' : params[j].name;
-					docs += '\t * @param (' + params[j].type + ') ' + params[j].description + '\n';
+					docs += '\t * @param (' + params[j].type + ') ' + (params[j].description?params[j].description:params[j].summary) + '\n';
 					if(j != params.length-1){
 						funcDef += ', '
 					}
