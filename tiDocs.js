@@ -14,7 +14,7 @@ for(var objName in apiJSON) {
 	
 	if(props && props.length > 0) {
 		for(var i = 0; i<props.length; i++) {
-			sys.print('\t/**\n\t * ' + (props[i].description?props[i].description:props[i].summary) + '\n\t * @type ' + props[i].type+ '\n\t * @final\n\t */\n\t' + props[i].name + ': 0' + (i != props.length-1 ? ',\n\n' : ''));
+			sys.print('\t/**\n\t * ' + props[i].summary.replace('<p>', '').replace('</p>', '') + '\n\t * @type ' + props[i].type+ '\n\t * @final\n\t */\n\t' + props[i].name + ': 0' + (i != props.length-1 ? ',\n\n' : ''));
 		}
 		sys.puts(methods && methods.length > 0 ? ',\n' : '');
 	}
